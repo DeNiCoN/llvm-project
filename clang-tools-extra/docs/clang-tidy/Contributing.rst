@@ -519,8 +519,8 @@ the check implements and what the current values are (e.g. for the
   public:
     MyCheck(StringRef Name, ClangTidyContext *Context)
       : ClangTidyCheck(Name, Context),
-        SomeOption(Options.get("SomeOption1", -1U)),
-        SomeOption(Options.get("SomeOption2", "some default")) {}
+        SomeOption1(Options.get("SomeOption1", -1U)),
+        SomeOption2(Options.get("SomeOption2", "some default")) {}
 
     void storeOptions(ClangTidyOptions::OptionMap &Opts) override {
       Options.store(Opts, "SomeOption1", SomeOption1);
