@@ -160,6 +160,11 @@ New checks
   Replace comparisons between signed and unsigned integers with their safe
   C++20 ``std::cmp_*`` alternative, if available.
 
+- New :doc:`misc-generic-ast-match
+  <clang-tidy/checks/misc/generic-ast-match>` check.
+
+  A check that matches on a given ast expression.
+
 - New :doc:`portability-template-virtual-member-function
   <clang-tidy/checks/portability/template-virtual-member-function>` check.
 

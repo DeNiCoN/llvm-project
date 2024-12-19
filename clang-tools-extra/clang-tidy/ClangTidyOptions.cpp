@@ -125,6 +125,45 @@ void yamlize(IO &IO, ClangTidyOptions::OptionMap &Val, bool,
   }
 }
 
+template <>
+void yamlize(IO &IO, llvm::StringMap<std::string> &Val, bool,
+             EmptyContext &Ctx) {
+  if (IO.outputting()) {
+    // Ensure check options are sorted
+    std::vector<std::pair<StringRef, StringRef>> SortedOptions;
+    SortedOptions.reserve(Val.size());
+    for (auto &Key : Val) {
+      SortedOptions.emplace_back(Key.getKey(), Key.getValue());
+    }
+    std::sort(SortedOptions.begin(), SortedOptions.end());
+
+    IO.beginMapping();
+    // Only output as a map
+    for (auto &Option : SortedOptions) {
+      bool UseDefault = false;
+      void *SaveInfo = nullptr;
+      IO.preflightKey(Option.first.data(), true, false, UseDefault, SaveInfo);
+      IO.scalarString(Option.second, needsQuotes(Option.second));
+      IO.postflightKey(SaveInfo);
+    }
+    IO.endMapping();
+  } else {
+    // We need custom logic here to support the old method of specifying check
+    // options using a list of maps containing key and value keys.
+    auto &I = reinterpret_cast<Input &>(IO);
+    if (isa<MappingNode>(I.getCurrentNode())) {
+      IO.beginMapping();
+      for (StringRef Key : IO.keys()) {
+        IO.mapRequired(Key.data(), Val[Key]);
+      }
+      IO.endMapping();
+    } else {
+      IO.setError("expected a map");
+    }
+  }
+}
+
+
 struct ChecksVariant {
   std::optional<std::string> AsString;
   std::optional<std::vector<std::string>> AsVector;
@@ -180,6 +219,7 @@ template <> struct MappingTraits<ClangTidyOptions> {
     IO.mapOptional("InheritParentConfig", Options.InheritParentConfig);
     IO.mapOptional("UseColor", Options.UseColor);
     IO.mapOptional("SystemHeaders", Options.SystemHeaders);
+    IO.mapOptional("ClangQueryChecks", Options.ClangQueryChecks);
   }
 };
 
@@ -247,6 +287,12 @@ ClangTidyOptions &ClangTidyOptions::mergeWith(const ClangTidyOptions &Other,
         KeyValue.getKey(),
         ClangTidyValue(KeyValue.getValue().Value,
                        KeyValue.getValue().Priority + Order));
+  }
+
+  for (const auto &KeyValue : Other.ClangQueryChecks) {
+    ClangQueryChecks.insert_or_assign(
+      KeyValue.getKey(),
+      KeyValue.getValue());
   }
   return *this;
 }

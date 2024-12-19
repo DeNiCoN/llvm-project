@@ -127,6 +127,7 @@ struct ClangTidyOptions {
 
   /// Key-value mapping used to store check-specific options.
   OptionMap CheckOptions;
+  llvm::StringMap<std::string> ClangQueryChecks;
 
   using ArgList = std::vector<std::string>;
 

@@ -29,6 +29,7 @@ clang_target_link_libraries(clangTidy
   PRIVATE
   clangAST
   clangASTMatchers
+  clangDynamicASTMatchers
   clangAnalysis
   clangBasic
   clangFormat
@@ -38,6 +39,7 @@ clang_target_link_libraries(clangTidy
   clangSerialization
   clangTooling
   clangToolingCore
+  clangQuery
   )
 
 if(CLANG_TIDY_ENABLE_STATIC_ANALYZER)

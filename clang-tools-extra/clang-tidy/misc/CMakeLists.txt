@@ -22,6 +22,7 @@ add_clang_library(clangTidyMiscModule STATIC
   CoroutineHostileRAIICheck.cpp
   DefinitionsInHeadersCheck.cpp
   ConfusableIdentifierCheck.cpp
+  GenericAstMatchCheck.cpp
   HeaderIncludeCycleCheck.cpp
   IncludeCleanerCheck.cpp
   MiscTidyModule.cpp
