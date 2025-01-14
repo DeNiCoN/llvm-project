@@ -106,6 +106,9 @@ Improvements to clang-tidy
   which is no longer in use. The option will be fully removed in
   :program:`clang-tidy` version 18.
 
+- New :program:`clang-tidy` config property `ClangQueryChecks` that allows adding
+  custom checks based on a :program:`clang-query` syntax
+
 New checks
 ^^^^^^^^^^
 

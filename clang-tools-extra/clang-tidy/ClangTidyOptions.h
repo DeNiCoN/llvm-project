@@ -9,6 +9,7 @@
 #ifndef LLVM_CLANG_TOOLS_EXTRA_CLANG_TIDY_CLANGTIDYOPTIONS_H
 #define LLVM_CLANG_TOOLS_EXTRA_CLANG_TIDY_CLANGTIDYOPTIONS_H
 
+#include "clang/ASTMatchers/Dynamic/VariantValue.h"
 #include "llvm/ADT/IntrusiveRefCntPtr.h"
 #include "llvm/ADT/StringMap.h"
 #include "llvm/ADT/StringRef.h"
@@ -113,8 +114,15 @@ struct ClangTidyOptions {
   typedef std::pair<std::string, std::string> StringPair;
   typedef llvm::StringMap<ClangTidyValue> OptionMap;
 
+  struct QueryCheckValue {
+    std::string Source;
+    std::vector<ast_matchers::dynamic::DynTypedMatcher> Matchers;
+  };
+  using QueryCheckMap = llvm::StringMap<QueryCheckValue>;
+
   /// Key-value mapping used to store check-specific options.
   OptionMap CheckOptions;
+  QueryCheckMap ClangQueryChecks;
 
   typedef std::vector<std::string> ArgList;
 

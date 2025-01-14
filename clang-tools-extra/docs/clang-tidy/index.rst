@@ -285,7 +285,53 @@ An overview of all the command-line options:
     a corresponding command-line option, command-line option takes precedence.
     The effective configuration can be inspected using -dump-config:
 
-      $ clang-tidy -dump-config
+    The following configuration options may be used in a .clang-tidy file:
+
+    CheckOptions                 - List of key-value pairs defining check-specific
+                                   options. Example:
+                                     CheckOptions:
+                                       some-check.SomeOption: 'some value'
+    Checks                       - Same as '--checks'. Additionally, the list of
+                                   globs can be specified as a list instead of a
+                                   string.
+    ClangQueryChecks             - List of key-value pairs. Key specifies a name
+                                   of the new check and value specifies a list
+                                   of matchers in the form of clang-query
+                                   syntax. Example:
+                                     ClangQueryChecks:
+                                       custom-check: |
+                                         let matcher varDecl(
+                                           hasTypeLoc(
+                                             typeLoc().bind("Custom message")
+                                           )
+                                         )
+                                         match matcher
+    ExcludeHeaderFilterRegex     - Same as '--exclude-header-filter'.
+    ExtraArgs                    - Same as '--extra-arg'.
+    ExtraArgsBefore              - Same as '--extra-arg-before'.
+    FormatStyle                  - Same as '--format-style'.
+    HeaderFileExtensions         - File extensions to consider to determine if a
+                                   given diagnostic is located in a header file.
+    HeaderFilterRegex            - Same as '--header-filter'.
+    ImplementationFileExtensions - File extensions to consider to determine if a
+                                   given diagnostic is located in an
+                                   implementation file.
+    InheritParentConfig          - If this option is true in a config file, the
+                                   configuration file in the parent directory
+                                   (if any exists) will be taken and the current
+                                   config file will be applied on top of the
+                                   parent one.
+    SystemHeaders                - Same as '--system-headers'.
+    UseColor                     - Same as '--use-color'.
+    User                         - Specifies the name or e-mail of the user
+                                   running clang-tidy. This option is used, for
+                                   example, to place the correct user name in
+                                   TODO() comments in the relevant check.
+    WarningsAsErrors             - Same as '--warnings-as-errors'.
+
+    The effective configuration can be inspected using --dump-config:
+
+      $ clang-tidy --dump-config
       ---
       Checks:              '-*,some-check'
       WarningsAsErrors:    ''
