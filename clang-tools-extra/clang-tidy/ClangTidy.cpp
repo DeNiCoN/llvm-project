@@ -42,6 +42,7 @@
 #include "llvm/Support/Process.h"
 #include <algorithm>
 #include <utility>
+#include "ClangQueryCheck.h"
 
 #if CLANG_TIDY_ENABLE_STATIC_ANALYZER
 #include "clang/Analysis/PathDiagnostic.h"
@@ -349,6 +350,12 @@ ClangTidyASTConsumerFactory::ClangTidyASTConsumerFactory(
   for (ClangTidyModuleRegistry::entry E : ClangTidyModuleRegistry::entries()) {
     std::unique_ptr<ClangTidyModule> Module = E.instantiate();
     Module->addCheckFactories(*CheckFactories);
+  }
+
+  for (const auto& [k, v] : Context.getOptions().ClangQueryChecks) {
+    CheckFactories->registerCheckFactory(k, [v](StringRef Name, ClangTidyContext* Context) {
+      return std::make_unique<misc::ClangQueryCheck>(Name, Context, v.Matchers);
+    });
   }
 }
 
