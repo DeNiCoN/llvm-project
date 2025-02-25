@@ -147,7 +147,6 @@ processQuerySource(IO &IO, StringRef SourceRef,
     }
     // FIXME FileQuerry should also be supported, but what to do with relative
     // paths?
-    case query::QK_File:
     case query::QK_DisableOutputKind:
     case query::QK_EnableOutputKind:
     case query::QK_SetOutputKind:
