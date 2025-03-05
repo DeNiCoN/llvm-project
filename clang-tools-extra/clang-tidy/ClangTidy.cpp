@@ -408,6 +408,13 @@ ClangTidyASTConsumerFactory::createASTConsumer(
   if (WorkingDir)
     Context.setCurrentBuildDirectory(WorkingDir.get());
 
+  for (const auto &[k, v] : Context.getOptions().ClangQueryChecks) {
+    CheckFactories->registerCheckFactory(k, [v](StringRef Name,
+                                                ClangTidyContext *Context) {
+      return std::make_unique<misc::ClangQueryCheck>(Name, Context, v.Matchers);
+    });
+  }
+
   std::vector<std::unique_ptr<ClangTidyCheck>> Checks =
       CheckFactories->createChecksForLanguage(&Context);
 
