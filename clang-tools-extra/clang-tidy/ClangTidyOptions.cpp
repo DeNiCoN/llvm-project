@@ -72,7 +72,8 @@ struct NOptionMap {
   NOptionMap(IO &, const ClangTidyOptions::OptionMap &OptionMap) {
     Options.reserve(OptionMap.size());
     for (const auto &KeyValue : OptionMap)
-      Options.emplace_back(std::string(KeyValue.getKey()), KeyValue.getValue().Value);
+      Options.emplace_back(std::string(KeyValue.getKey()),
+                           KeyValue.getValue().Value);
   }
   ClangTidyOptions::OptionMap denormalize(IO &) {
     ClangTidyOptions::OptionMap Map;
@@ -169,8 +170,8 @@ void yamlize(IO &IO, ClangTidyOptions::QueryCheckMap &Val, bool,
              EmptyContext &Ctx) {
   IO.beginMapping();
   if (IO.outputting()) {
-    for (auto &[k, v] : Val) {
-      IO.mapRequired(k.data(), v);
+    for (auto &entry : Val) {
+      IO.mapRequired(entry.first().data(), entry.second);
     }
   } else {
     for (StringRef Key : IO.keys()) {
